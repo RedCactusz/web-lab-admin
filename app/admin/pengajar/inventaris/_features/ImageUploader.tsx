@@ -4,16 +4,12 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 
 interface ImageUploaderProps {
-  namaAlat: string;
-  kodeAlat: string;
   existingPhotos: string[];
   onPhotosChange: (photos: string[]) => void;
   maxPhotos?: number;
 }
 
 export default function ImageUploader({
-  namaAlat,
-  kodeAlat,
   existingPhotos,
   onPhotosChange,
   maxPhotos = 5,

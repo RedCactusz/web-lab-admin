@@ -1,7 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_LARAVEL_API_URL || 'http://localhost:8001/admin_api';
 
-function extractData(json: any): any {
-  return json?.data ?? json;
+function extractData(json: unknown): unknown {
+  if (!json || typeof json !== 'object') return json;
+  return (json as { data?: unknown }).data ?? json;
 }
 
 export interface Inventaris {

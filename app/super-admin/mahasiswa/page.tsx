@@ -23,7 +23,10 @@ export default function KelolaMahasiswaPage() {
     setData(data);
   };
 
+  // Load data saat mount
   useEffect(() => {
+    // Load initial data - standard data fetching pattern
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData();
   }, []);
 

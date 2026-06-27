@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { authService } from "../../../services/authService";
 import AuthGuard from "@/app/components/ui/AuthGuard";
 import PengajarHeader from "./_features/PengajarHeader";
@@ -9,16 +9,11 @@ import TabContent from "./_features/TabContent";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState(1);
-  const [pengajar, setPengajar] = useState<any>(null);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    const data = authService.getPengajarFromStorage();
-    if (data) setPengajar(data);
-  }, []);
+  // Lazy initializer: load from localStorage saat mount pertama
+  const pengajar = useMemo(() => authService.getPengajarFromStorage(), []);
 
-  if (!mounted || !pengajar) {
+  if (!pengajar) {
     return <div className="p-10 text-slate-400 italic">Menyiapkan data...</div>;
   }
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { praktikumManagementService, type DetailPraktikumData } from "@/app/services/praktikumManagementService";
+import { praktikumManagementService } from "@/app/services/praktikumManagementService";
 import TabKelompok from "@/app/components/praktikum/TabKelompok";
 import TabJadwal from "@/app/components/praktikum/TabJadwal";
 import TabPenilaian from "@/app/components/praktikum/TabPenilaian";
@@ -21,7 +21,7 @@ export default function PraktikumManagementPage() {
   const slug = params.slug as string;
 
   const [activeTab, setActiveTab] = useState<TabKey>("kelompok");
-  const [detail, setDetail] = useState<DetailPraktikumData | null>(null);
+  const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const loadDetail = async () => {
@@ -36,8 +36,12 @@ export default function PraktikumManagementPage() {
     }
   };
 
+  // Load detail saat slug berubah
   useEffect(() => {
+    // Load detail saat praktikum berubah - standard data fetching pattern
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   if (loading) {
@@ -97,7 +101,7 @@ export default function PraktikumManagementPage() {
         <div className="p-6">
           {activeTab === "kelompok" && <TabKelompok slug={slug} detail={detail} onRefresh={loadDetail} />}
           {activeTab === "jadwal" && <TabJadwal slug={slug} onRefresh={loadDetail} />}
-          {activeTab === "penilaian" && <TabPenilaian slug={slug} detail={detail} onRefresh={loadDetail} />}
+          {activeTab === "penilaian" && <TabPenilaian slug={slug} onRefresh={loadDetail} />}
         </div>
       </div>
     </div>

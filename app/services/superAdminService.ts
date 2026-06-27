@@ -10,8 +10,9 @@ function getHeaders(): HeadersInit {
   };
 }
 
-function extractData(json: any): any {
-  return json?.data ?? json;
+function extractData(json: unknown): unknown {
+  if (!json || typeof json !== 'object') return json;
+  return (json as { data?: unknown }).data ?? json;
 }
 
 export interface PengajarData {
@@ -422,7 +423,7 @@ export const superAdminService = {
     },
   },
 
-  async getStats(): Promise<any> {
+  async getStats(): Promise<unknown> {
     const response = await fetch(`${API_URL}/super-admin/stats`, { headers: getHeaders() });
     if (!response.ok) return null;
     return extractData(await response.json());
