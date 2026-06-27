@@ -38,10 +38,10 @@ export default function TabRekap({ praktikum }: TabRekapProps) {
       const row: (string | number)[] = [
         m.nim,
         m.nama_lengkap,
-        ...mingguList.map((_, i) => {
+        ...mingguList.map((minggu, i) => {
           const data = nilaiHarian[i];
           if (!data) return 0;
-          return penilaianService.hitungNilaiPekan(data, mingguList[_]?.parameters || []);
+          return penilaianService.hitungNilaiPekan(data, minggu.parameters || []);
         }),
         nilaiData?.nilai_akhir || 0,
       ];

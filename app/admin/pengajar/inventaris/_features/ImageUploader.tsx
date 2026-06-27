@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 
 interface ImageUploaderProps {
   namaAlat: string;
@@ -19,14 +20,6 @@ export default function ImageUploader({
 }: ImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [processing, setProcessing] = useState(false);
-
-  const generateFileName = (): string => {
-    const now = new Date();
-    const dateStr = now.toISOString().slice(0, 10).replace(/-/g, "");
-    const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, "");
-    const sanitizedName = namaAlat.replace(/[^a-zA-Z0-9]/g, "_");
-    return `${sanitizedName}_${kodeAlat}_${dateStr}_${timeStr}.jpg`;
-  };
 
   const processImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -127,9 +120,11 @@ export default function ImageUploader({
         <div className="flex flex-wrap gap-3">
           {existingPhotos.map((photo, index) => (
             <div key={index} className="relative group">
-              <img
+              <Image
                 src={photo}
                 alt={`Foto ${index + 1}`}
+                width={96}
+                height={96}
                 className="w-24 h-24 object-cover rounded-xl border border-gray-200 shadow-sm"
               />
               <button

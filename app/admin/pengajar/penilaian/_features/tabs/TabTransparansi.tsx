@@ -85,7 +85,7 @@ export default function TabTransparansi({ praktikum }: TabTransparansiProps) {
       </div>
 
       {searched && mahasiswa.length === 0 && (
-        <div className="text-center py-10 text-slate-300 italic">Tidak ada mahasiswa dengan NIM "{searchNim}"</div>
+        <div className="text-center py-10 text-slate-300 italic">Tidak ada mahasiswa dengan NIM &quot;{searchNim}&quot;</div>
       )}
 
       {mahasiswa.length > 1 && (

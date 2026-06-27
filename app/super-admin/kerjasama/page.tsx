@@ -13,19 +13,19 @@ export default function KelolaKerjasamaPage() {
     title: "",
     content: "",
     date: new Date().toISOString().split('T')[0],
-    partner_id: "",
+    partner_id: 0,
     image: "",
     is_published: true,
   });
-
-  useEffect(() => {
-    loadData();
-  }, []);
 
   const loadData = async () => {
     const data = await superAdminService.kerjasama.getAll();
     setData(data);
   };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const filtered = data.filter((item) =>
     item.title.toLowerCase().includes(search.toLowerCase())
@@ -48,7 +48,7 @@ export default function KelolaKerjasamaPage() {
       title: item.title,
       content: item.content,
       date: item.date,
-      partner_id: item.partner_id.toString(),
+      partner_id: item.partner_id,
       image: item.image,
       is_published: item.is_published,
     });
@@ -62,7 +62,7 @@ export default function KelolaKerjasamaPage() {
       title: "",
       content: "",
       date: new Date().toISOString().split('T')[0],
-      partner_id: "",
+      partner_id: 0,
       image: "",
       is_published: true,
     });
@@ -90,7 +90,7 @@ export default function KelolaKerjasamaPage() {
               title: "",
               content: "",
               date: new Date().toISOString().split('T')[0],
-              partner_id: "",
+              partner_id: 0,
               image: "",
               is_published: true,
             });
@@ -168,7 +168,7 @@ export default function KelolaKerjasamaPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">ID Partner *</label>
-                  <input type="number" value={form.partner_id} onChange={(e) => setForm({ ...form, partner_id: e.target.value })} className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                  <input type="number" value={form.partner_id} onChange={(e) => setForm({ ...form, partner_id: Number(e.target.value) })} className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
                 </div>
               </div>
               <div>

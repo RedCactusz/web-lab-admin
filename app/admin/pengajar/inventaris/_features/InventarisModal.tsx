@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import { type Inventaris } from "@/app/services/inventarisService";
 import ImageUploader from "./ImageUploader";
 
 interface InventarisModalProps {
   item?: Inventaris;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: Inventaris) => void;
 }
 
 const KATEGORI_OPTIONS = [
@@ -26,6 +26,7 @@ const KONDISI_OPTIONS = [
 
 export default function InventarisModal({ item, onClose, onSubmit }: InventarisModalProps) {
   const isEdit = !!item;
+
   const [form, setForm] = useState({
     kode_alat: "",
     nama: "",
@@ -39,7 +40,8 @@ export default function InventarisModal({ item, onClose, onSubmit }: InventarisM
     foto: [] as string[],
   });
 
-  useEffect(() => {
+  // Sync form with item using useLayoutEffect
+  useLayoutEffect(() => {
     if (item) {
       setForm({
         kode_alat: item.kode_alat,

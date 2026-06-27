@@ -19,14 +19,14 @@ export default function KelolaPeminjamanPage() {
   const [revisiItem, setRevisiItem] = useState<Peminjaman | null>(null);
   const [konfirmasiItem, setKonfirmasiItem] = useState<Peminjaman | null>(null);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = async () => {
     const data = await peminjamanService.getAll();
     setPeminjaman(data);
   };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const handleApprove = async (id: number) => {
     await peminjamanService.approve(id);

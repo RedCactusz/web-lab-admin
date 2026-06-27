@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { penilaianService, type MingguData, type ParameterData, type MahasiswaNilai } from "@/app/services/penilaianService";
+import { penilaianService, type MingguData, type MahasiswaNilai } from "@/app/services/penilaianService";
 import Button from "@/app/components/buttons/Button";
 
 interface TabInputProps {
@@ -12,8 +12,16 @@ export default function TabInput({ praktikum }: TabInputProps) {
   const [mingguList, setMingguList] = useState<MingguData[]>([]);
   const [mahasiswa, setMahasiswa] = useState<MahasiswaNilai[]>([]);
   const [selectedMinggu, setSelectedMinggu] = useState<MingguData | null>(null);
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const loadMahasiswa = async () => {
+    try {
+      const data = await penilaianService.getStudents(praktikum);
+      setMahasiswa(data);
+    } catch (err) {
+      console.error("Error loading data:", err);
+    }
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -29,23 +37,16 @@ export default function TabInput({ praktikum }: TabInputProps) {
   }, [praktikum]);
 
   useEffect(() => {
-    if (selectedMinggu) loadMahasiswa();
+    if (selectedMinggu) {
+      loadMahasiswa();
+    }
   }, [selectedMinggu]);
 
-  const loadMahasiswa = async () => {
-    try {
-      const data = await penilaianService.getStudents(praktikum);
-      setMahasiswa(data);
-    } catch (err) {
-      console.error("Error loading data:", err);
-    }
-  };
-
-  const handleInputChange = (mhsId: number, paramName: string, value: any) => {
+  const handleInputChange = (mhsId: number, paramName: string, value: string | number) => {
     setMahasiswa(prev => prev.map(m => {
       if (m.id !== mhsId) return m;
       const nilaiData = m.nilai?.[0];
-      const nilaiHarian: any[] = nilaiData?.nilai_harian ? [...nilaiData.nilai_harian] : [];
+      const nilaiHarian: Record<string, string | number>[] = nilaiData?.nilai_harian ? [...nilaiData.nilai_harian] : [];
       const mingguIndex = (selectedMinggu?.minggu_ke ?? 1) - 1;
 
       if (!nilaiHarian[mingguIndex]) {
@@ -88,9 +89,10 @@ export default function TabInput({ praktikum }: TabInputProps) {
       await Promise.all(promises);
       alert("✅ Berhasil! Data disimpan dan Nilai Akhir dihitung otomatis.");
       await loadMahasiswa();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert("❌ Error: " + err.message);
+      const message = err instanceof Error ? err.message : "Unknown error";
+      alert("❌ Error: " + message);
     } finally {
       setSaving(false);
     }

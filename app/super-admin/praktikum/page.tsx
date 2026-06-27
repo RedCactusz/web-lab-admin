@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { superAdminService, type PraktikumData } from "@/app/services/superAdminService";
 
@@ -20,19 +20,19 @@ export default function KelolaPraktikumPage() {
     jumlah_plug: "",
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const res = await superAdminService.praktikum.getAll();
       // Pastikan jika API gagal/error, state di-set ke array kosong agar tidak crash
-      setData(res || []); 
+      setData(res || []);
     } catch (error) {
       console.error("Gagal memuat data praktikum:", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const filtered = data.filter(
     (d) =>

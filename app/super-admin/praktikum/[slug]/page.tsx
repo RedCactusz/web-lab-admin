@@ -24,10 +24,6 @@ export default function PraktikumManagementPage() {
   const [detail, setDetail] = useState<DetailPraktikumData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadDetail();
-  }, [slug]);
-
   const loadDetail = async () => {
     setLoading(true);
     try {
@@ -39,6 +35,10 @@ export default function PraktikumManagementPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadDetail();
+  }, [slug]);
 
   if (loading) {
     return (

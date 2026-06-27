@@ -1,8 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
 
 interface SidebarProps {
-  user: any;
+  user: {
+    nama_lengkap?: string;
+    username?: string;
+    praktikum?: string;
+    plug?: string;
+  };
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
 }

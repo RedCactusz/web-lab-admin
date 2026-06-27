@@ -20,10 +20,6 @@ export default function TabPenilaian({ slug, detail, onRefresh }: TabPenilaianPr
   const [generatingMinggu, setGeneratingMinggu] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, [slug]);
-
   const loadData = async () => {
     setLoading(true);
     try {
@@ -39,6 +35,10 @@ export default function TabPenilaian({ slug, detail, onRefresh }: TabPenilaianPr
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadData();
+  }, [slug]);
 
   const handleGenerateMinggu = async () => {
     if (!confirm("Generate 14 minggu untuk praktikum ini? Setiap minggu akan otomatis memiliki parameter presensi.")) return;

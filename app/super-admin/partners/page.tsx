@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { superAdminService, type PartnerData } from "@/app/services/superAdminService";
 
 export default function KelolaPartnerPage() {
@@ -17,14 +18,14 @@ export default function KelolaPartnerPage() {
     is_published: true,
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = async () => {
     const data = await superAdminService.partners.getAll();
     setData(data);
   };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const filtered = data.filter((item) =>
     item.nama.toLowerCase().includes(search.toLowerCase())
@@ -115,7 +116,7 @@ export default function KelolaPartnerPage() {
                 filtered.map((item) => (
                   <tr key={item.id} className="bg-white hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
-                      <img src={item.logo} alt={item.nama} className="w-12 h-12 object-contain rounded-lg bg-gray-50" />
+                      <Image src={item.logo} alt={item.nama} width={48} height={48} className="w-12 h-12 object-contain rounded-lg bg-gray-50" />
                     </td>
                     <td className="px-4 py-3 font-semibold text-gray-900">{item.nama}</td>
                     <td className="px-4 py-3 text-gray-600">{item.website}</td>
