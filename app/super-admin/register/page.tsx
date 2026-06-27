@@ -21,7 +21,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_LARAVEL_API_URL || 'http://localhost:8000/api'}/super-admin/register`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_LARAVEL_API_URL || 'http://localhost:8001/admin_api'}/super-admin/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
