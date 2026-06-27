@@ -1,5 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_LARAVEL_API_URL || 'http://localhost:8001/admin_api';
 
+function extractData(json: any): any {
+  return json?.data ?? json;
+}
+
 export interface Inventaris {
   id: number;
   kode_alat: string;
@@ -26,7 +30,7 @@ export const inventarisService = {
         },
       });
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     } catch {
       return [];
     }
@@ -43,7 +47,7 @@ export const inventarisService = {
         },
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     } catch {
       return null;
     }
@@ -62,7 +66,7 @@ export const inventarisService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     } catch {
       return null;
     }
@@ -81,7 +85,7 @@ export const inventarisService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     } catch {
       return null;
     }

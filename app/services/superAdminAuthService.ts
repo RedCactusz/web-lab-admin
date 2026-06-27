@@ -20,7 +20,8 @@ export const superAdminAuthService = {
       if (!response.ok) return null;
 
       const data = await response.json();
-      return { user: data.user, token: data.token };
+      const result = data.data ?? data;
+      return { user: result.user, token: result.token };
     } catch {
       return null;
     }
