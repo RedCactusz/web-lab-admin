@@ -10,6 +10,10 @@ function getHeaders(): HeadersInit {
   };
 }
 
+function extractData(json: any): any {
+  return json?.data ?? json;
+}
+
 export interface PengajarData {
   id: number;
   nama_lengkap: string;
@@ -109,14 +113,14 @@ export const superAdminService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async getAll(): Promise<PengajarData[]> {
       const response = await fetch(`${API_URL}/super-admin/pengajar`, {
         headers: getHeaders()
       });
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     },
     async update(id: number, updates: Partial<PengajarData>): Promise<PengajarData | null> {
       const response = await fetch(`${API_URL}/super-admin/pengajar/${id}`, {
@@ -125,7 +129,7 @@ export const superAdminService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async delete(id: number): Promise<boolean> {
       const response = await fetch(`${API_URL}/super-admin/pengajar/${id}`, {
@@ -140,7 +144,7 @@ export const superAdminService = {
     async getAll(): Promise<MahasiswaData[]> {
       const response = await fetch(`${API_URL}/super-admin/mahasiswa`, { headers: getHeaders() });
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     },
     async create(item: Omit<MahasiswaData, "id">): Promise<MahasiswaData | null> {
       const response = await fetch(`${API_URL}/super-admin/mahasiswa`, {
@@ -149,7 +153,7 @@ export const superAdminService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async update(id: number, updates: Partial<MahasiswaData>): Promise<MahasiswaData | null> {
       const response = await fetch(`${API_URL}/super-admin/mahasiswa/${id}`, {
@@ -158,7 +162,7 @@ export const superAdminService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async delete(id: number): Promise<boolean> {
       const response = await fetch(`${API_URL}/super-admin/mahasiswa/${id}`, {
@@ -182,7 +186,7 @@ export const superAdminService = {
       });
       if (!response.ok) return null;
       const json = await response.json();
-      return json.results;
+      return extractData(json).results;
     },
   },
 
@@ -191,7 +195,7 @@ export const superAdminService = {
       const response = await fetch(`${API_URL}/selector/praktikum`, { headers: getHeaders() });
       console.log("Fetch Praktikum Response:", response);
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     },
     async create(item: Omit<PraktikumData, "id">): Promise<PraktikumData | null> {
       const response = await fetch(`${API_URL}/super-admin/praktikum`, {
@@ -200,7 +204,7 @@ export const superAdminService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async update(id: number, updates: Partial<PraktikumData>): Promise<PraktikumData | null> {
       const response = await fetch(`${API_URL}/super-admin/praktikum/${id}`, {
@@ -209,7 +213,7 @@ export const superAdminService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async delete(id: number): Promise<boolean> {
       const response = await fetch(`${API_URL}/super-admin/praktikum/${id}`, {
@@ -224,7 +228,7 @@ export const superAdminService = {
     async getAll(): Promise<InventarisData[]> {
       const response = await fetch(`${API_URL}/super-admin/inventaris`, { headers: getHeaders() });
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     },
     async create(item: Omit<InventarisData, "id">): Promise<InventarisData | null> {
       const response = await fetch(`${API_URL}/super-admin/inventaris`, {
@@ -233,7 +237,7 @@ export const superAdminService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async update(id: number, updates: Partial<InventarisData>): Promise<InventarisData | null> {
       const response = await fetch(`${API_URL}/super-admin/inventaris/${id}`, {
@@ -242,7 +246,7 @@ export const superAdminService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async delete(id: number): Promise<boolean> {
       const response = await fetch(`${API_URL}/super-admin/inventaris/${id}`, {
@@ -257,7 +261,7 @@ export const superAdminService = {
     async getAll(): Promise<NewsData[]> {
       const response = await fetch(`${API_URL}/super-admin/news`, { headers: getHeaders() });
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     },
     async create(item: Omit<NewsData, "id" | "slug">): Promise<NewsData | null> {
       const response = await fetch(`${API_URL}/super-admin/news`, {
@@ -266,7 +270,7 @@ export const superAdminService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async update(id: number, updates: Partial<NewsData>): Promise<NewsData | null> {
       const response = await fetch(`${API_URL}/super-admin/news/${id}`, {
@@ -275,7 +279,7 @@ export const superAdminService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async delete(id: number): Promise<boolean> {
       const response = await fetch(`${API_URL}/super-admin/news/${id}`, {
@@ -290,7 +294,7 @@ export const superAdminService = {
     async getAll(): Promise<GalleryData[]> {
       const response = await fetch(`${API_URL}/super-admin/gallery`, { headers: getHeaders() });
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     },
     async create(item: Omit<GalleryData, "id">): Promise<GalleryData | null> {
       const response = await fetch(`${API_URL}/super-admin/gallery`, {
@@ -299,7 +303,7 @@ export const superAdminService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async update(id: number, updates: Partial<GalleryData>): Promise<GalleryData | null> {
       const response = await fetch(`${API_URL}/super-admin/gallery/${id}`, {
@@ -308,7 +312,7 @@ export const superAdminService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async delete(id: number): Promise<boolean> {
       const response = await fetch(`${API_URL}/super-admin/gallery/${id}`, {
@@ -323,7 +327,7 @@ export const superAdminService = {
     async getAll(): Promise<AgendaData[]> {
       const response = await fetch(`${API_URL}/super-admin/agenda`, { headers: getHeaders() });
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     },
     async create(item: Omit<AgendaData, "id">): Promise<AgendaData | null> {
       const response = await fetch(`${API_URL}/super-admin/agenda`, {
@@ -332,7 +336,7 @@ export const superAdminService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async update(id: number, updates: Partial<AgendaData>): Promise<AgendaData | null> {
       const response = await fetch(`${API_URL}/super-admin/agenda/${id}`, {
@@ -341,7 +345,7 @@ export const superAdminService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async delete(id: number): Promise<boolean> {
       const response = await fetch(`${API_URL}/super-admin/agenda/${id}`, {
@@ -356,7 +360,7 @@ export const superAdminService = {
     async getAll(): Promise<PartnerData[]> {
       const response = await fetch(`${API_URL}/super-admin/partners`, { headers: getHeaders() });
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     },
     async create(item: Omit<PartnerData, "id">): Promise<PartnerData | null> {
       const response = await fetch(`${API_URL}/super-admin/partners`, {
@@ -365,7 +369,7 @@ export const superAdminService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async update(id: number, updates: Partial<PartnerData>): Promise<PartnerData | null> {
       const response = await fetch(`${API_URL}/super-admin/partners/${id}`, {
@@ -374,7 +378,7 @@ export const superAdminService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async delete(id: number): Promise<boolean> {
       const response = await fetch(`${API_URL}/super-admin/partners/${id}`, {
@@ -389,7 +393,7 @@ export const superAdminService = {
     async getAll(): Promise<KerjasamaData[]> {
       const response = await fetch(`${API_URL}/super-admin/kerjasama`, { headers: getHeaders() });
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     },
     async create(item: Omit<KerjasamaData, "id">): Promise<KerjasamaData | null> {
       const response = await fetch(`${API_URL}/super-admin/kerjasama`, {
@@ -398,7 +402,7 @@ export const superAdminService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async update(id: number, updates: Partial<KerjasamaData>): Promise<KerjasamaData | null> {
       const response = await fetch(`${API_URL}/super-admin/kerjasama/${id}`, {
@@ -407,7 +411,7 @@ export const superAdminService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return response.json();
+      return extractData(await response.json());
     },
     async delete(id: number): Promise<boolean> {
       const response = await fetch(`${API_URL}/super-admin/kerjasama/${id}`, {
@@ -421,6 +425,6 @@ export const superAdminService = {
   async getStats(): Promise<any> {
     const response = await fetch(`${API_URL}/super-admin/stats`, { headers: getHeaders() });
     if (!response.ok) return null;
-    return response.json();
+    return extractData(await response.json());
   },
 };

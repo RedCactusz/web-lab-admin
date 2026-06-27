@@ -2,6 +2,10 @@ import type { Peminjaman, PeminjamanItem } from "@/app/types/peminjaman";
 
 const API_URL = process.env.NEXT_PUBLIC_LARAVEL_API_URL || 'http://localhost:8001/admin_api';
 
+function extractData(json: any): any {
+  return json?.data ?? json;
+}
+
 function getHeaders(): HeadersInit {
   const token = typeof window !== 'undefined' ? localStorage.getItem('superadmin_token') : null;
   return {
@@ -23,7 +27,7 @@ export const peminjamanService = {
     try {
       const response = await fetch(`${API_URL}/super-admin/peminjaman`, { headers: getHeaders() });
       if (!response.ok) return [];
-      return response.json();
+      return extractData(await response.json());
     } catch {
       return [];
     }
@@ -45,7 +49,7 @@ export const peminjamanService = {
       const response = await fetch(`${API_URL}/pengajar/peminjaman`, { headers: getPengajarHeaders() });
       if (!response.ok) return [];
       const json = await response.json();
-      return json.data || [];
+      return extractData(json) || [];
     } catch {
       return [];
     }
