@@ -44,8 +44,9 @@ export default function LoginForm() {
         localStorage.setItem("user_pengajar", JSON.stringify(data));
         router.push("/admin/pengajar/penilaian");
       }
-    } catch (error: any) {
-      alert("Error Database: " + error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      alert("Error Database: " + message);
     } finally {
       setLoading(false);
     }

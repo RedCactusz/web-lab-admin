@@ -1,15 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { praktikumManagementService, type MingguData, type ParameterData, type DetailPraktikumData, type PreviewMinggu } from "@/app/services/praktikumManagementService";
+import { praktikumManagementService, type MingguData, type ParameterData, type PreviewMinggu } from "@/app/services/praktikumManagementService";
 
 interface TabPenilaianProps {
   slug: string;
-  detail: DetailPraktikumData;
   onRefresh: () => void;
 }
 
-export default function TabPenilaian({ slug, detail, onRefresh }: TabPenilaianProps) {
+export default function TabPenilaian({ slug, onRefresh }: TabPenilaianProps) {
   const [mingguList, setMingguList] = useState<MingguData[]>([]);
   const [preview, setPreview] = useState<PreviewMinggu[]>([]);
   const [selectedMinggu, setSelectedMinggu] = useState<MingguData | null>(null);
@@ -36,8 +35,12 @@ export default function TabPenilaian({ slug, detail, onRefresh }: TabPenilaianPr
     }
   };
 
+  // Load data saat slug berubah
   useEffect(() => {
+    // Load data saat praktikum berubah - standard data fetching pattern
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   const handleGenerateMinggu = async () => {
@@ -69,8 +72,9 @@ export default function TabPenilaian({ slug, detail, onRefresh }: TabPenilaianPr
       setShowAddParam(false);
       setParamForm({ nama: "", bobot: "", tipe: "numeric", max_nilai: "100" });
       loadData();
-    } catch (error: any) {
-      alert(error.message || "Gagal menambah parameter");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      alert(message || "Gagal menambah parameter");
     }
   };
 
@@ -86,8 +90,9 @@ export default function TabPenilaian({ slug, detail, onRefresh }: TabPenilaianPr
       setEditingParam(null);
       setParamForm({ nama: "", bobot: "", tipe: "numeric", max_nilai: "100" });
       loadData();
-    } catch (error: any) {
-      alert(error.message || "Gagal update parameter");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      alert(message || "Gagal update parameter");
     }
   };
 
@@ -100,8 +105,9 @@ export default function TabPenilaian({ slug, detail, onRefresh }: TabPenilaianPr
     try {
       await praktikumManagementService.deleteParameter(param.id);
       loadData();
-    } catch (error: any) {
-      alert(error.message || "Gagal hapus parameter");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      alert(message || "Gagal hapus parameter");
     }
   };
 
@@ -114,8 +120,9 @@ export default function TabPenilaian({ slug, detail, onRefresh }: TabPenilaianPr
         alert(`Berhasil! ${res.created} data baru, ${res.updated} data diperbarui dari ${res.total_mahasiswa} mahasiswa`);
         onRefresh();
       }
-    } catch (error: any) {
-      alert(error.message || "Gagal generate penilaian");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      alert(message || "Gagal generate penilaian");
     } finally {
       setGeneratingMinggu(null);
     }

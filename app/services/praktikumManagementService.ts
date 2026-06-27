@@ -70,7 +70,13 @@ export interface DetailPraktikumData {
       plug: number | null;
     };
   }[];
-  pengajar: any[];
+  pengajar: Array<{
+    id: number;
+    nama_lengkap: string;
+    nip: string;
+    username: string;
+    is_active: boolean;
+  }>;
   minggu: MingguData[];
   jadwal: JadwalData[];
   total_mahasiswa: number;

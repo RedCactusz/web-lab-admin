@@ -103,7 +103,7 @@ export default function CsvImportModal({ onClose, onImportComplete }: CsvImportM
       } else {
         setError("Gagal mengimpor file. Pastikan format CSV benar.");
       }
-    } catch (err) {
+    } catch {
       setError("Terjadi kesalahan saat mengimpor");
     } finally {
       setLoading(false);

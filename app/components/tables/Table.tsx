@@ -50,7 +50,7 @@ export default function Table<T extends { id: string | number }>({
               >
                 {columns.map((col) => (
                   <td key={col.key} className={`px-4 py-3 ${col.className || ""}`}>
-                    {col.render ? col.render(item) : (item as any)[col.key]}
+                    {col.render ? col.render(item) : (item as Record<string, unknown>)[col.key] as React.ReactNode}
                   </td>
                 ))}
               </tr>

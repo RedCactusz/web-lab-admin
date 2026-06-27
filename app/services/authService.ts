@@ -68,7 +68,7 @@ export const authService = {
     localStorage.removeItem("pengajar_token");
   },
 
-  registerPengajar: async (userData: any): Promise<boolean> => {
+  registerPengajar: async (userData: Record<string, unknown>): Promise<boolean> => {
     try {
       const response = await fetch(`${API_URL}/register/pengajar`, {
         method: 'POST',

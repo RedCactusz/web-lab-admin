@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { superAdminAuthService, type SuperAdminUser } from "@/app/services/superAdminAuthService";
 
@@ -24,16 +24,23 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [user, setUser] = useState<SuperAdminUser | null>(null);
+  const hasRedirectedRef = useRef(false);
 
   useEffect(() => {
     if (pathname === "/super-admin/login" || pathname === "/super-admin/register") {
+      // Set dummy user untuk login/register pages
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser({} as SuperAdminUser);
       return;
     }
+
+    // Cek auth untuk pages lain
     const data = superAdminAuthService.getFromStorage();
-    if (!data) {
+    if (!data && !hasRedirectedRef.current) {
+      hasRedirectedRef.current = true;
       window.location.href = "/super-admin/login";
-    } else {
+    } else if (data) {
+       
       setUser(data);
     }
   }, [pathname]);

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 interface AuthGuardProps {
@@ -10,41 +10,26 @@ interface AuthGuardProps {
 
 export default function AuthGuard({ storageKey, redirectTo, children }: AuthGuardProps) {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const hasRedirectedRef = useRef(false);
 
-  useEffect(() => {
-    const user = localStorage.getItem(storageKey);
+  // Derived state: cek localStorage tanpa trigger re-render
+  const isAuthenticated = useMemo(() => {
+    return !!localStorage.getItem(storageKey);
+  }, [storageKey]);
 
-    if (user) {
-      setIsAuthenticated(true);
-      return;
-    }
-
-    // Cek apakah role lain yang login (cross-role redirect)
-    if (storageKey === "user_pengajar") {
-      const praktikan = localStorage.getItem("user_praktikan");
-      if (praktikan) {
-        router.replace("/admin/mahasiswa");
-        return;
+  useLayoutEffect(() => {
+    // Hanya redirect jika belum ada user dan belum pernah redirect
+    if (!isAuthenticated && !hasRedirectedRef.current) {
+      hasRedirectedRef.current = true;
+      if (redirectTo) {
+        router.replace(redirectTo);
+      } else {
+        router.replace(storageKey === "user_pengajar" ? "/pengajar" : "/mahasiswa");
       }
     }
+  }, [storageKey, redirectTo, router, isAuthenticated]);
 
-    if (storageKey === "user_praktikan") {
-      const pengajar = localStorage.getItem("user_pengajar");
-      if (pengajar) {
-        router.replace("/admin/pengajar/penilaian");
-        return;
-      }
-    }
-
-    // Tidak ada yang login, redirect ke halaman login sesuai role
-    if (redirectTo) {
-      router.replace(redirectTo);
-    } else {
-      router.replace(storageKey === "user_pengajar" ? "/pengajar" : "/mahasiswa");
-    }
-  }, [storageKey, redirectTo, router]);
-
+  // Tampilkan loading jika belum terautentikasi (sedang redirect)
   if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
