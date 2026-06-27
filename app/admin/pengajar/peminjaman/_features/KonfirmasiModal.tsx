@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Peminjaman, PeminjamanItem, PengembalianItem } from "@/app/types/peminjaman";
+import type { Peminjaman, PengembalianItem } from "@/app/types/peminjaman";
 
 interface KonfirmasiModalProps {
   item: Peminjaman;

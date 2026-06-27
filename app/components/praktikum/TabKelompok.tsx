@@ -19,10 +19,6 @@ export default function TabKelompok({ slug, detail, onRefresh }: TabKelompokProp
   const [plugInput, setPlugInput] = useState("");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, [slug]);
-
   const loadData = async () => {
     setLoading(true);
     try {
@@ -34,6 +30,10 @@ export default function TabKelompok({ slug, detail, onRefresh }: TabKelompokProp
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadData();
+  }, [slug]);
 
   const filtered = allMahasiswa.filter(
     (m) =>

@@ -23,14 +23,14 @@ export default function KelolaInventarisPage() {
     keterangan: "",
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = async () => {
     const data = await superAdminService.inventaris.getAll();
     setData(data);
   };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const filtered = data.filter((item) => {
     const matchSearch = item.nama.toLowerCase().includes(search.toLowerCase()) || item.kode_alat.toLowerCase().includes(search.toLowerCase());

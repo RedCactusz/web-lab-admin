@@ -14,17 +14,18 @@ export default function KelolaMahasiswaPage() {
   const [form, setForm] = useState({
     nim: "",
     nama_lengkap: "",
+    angkatan: 0,
     password: "",
   });
-
-  useEffect(() => {
-    loadData();
-  }, []);
 
   const loadData = async () => {
     const data = await superAdminService.mahasiswa.getAll();
     setData(data);
   };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const filtered = data.filter(
     (d) =>
@@ -48,6 +49,7 @@ export default function KelolaMahasiswaPage() {
     setForm({
       nim: item.nim,
       nama_lengkap: item.nama_lengkap,
+      angkatan: item.angkatan,
       password: "",
     });
     setShowModal(true);
@@ -56,7 +58,7 @@ export default function KelolaMahasiswaPage() {
   const closeModal = () => {
     setShowModal(false);
     setEditingItem(null);
-    setForm({ nim: "", nama_lengkap: "", password: "" });
+    setForm({ nim: "", nama_lengkap: "", angkatan: 0, password: "" });
   };
 
   const handleDelete = async () => {
@@ -84,7 +86,7 @@ export default function KelolaMahasiswaPage() {
           <button
             onClick={() => {
               setEditingItem(null);
-              setForm({ nim: "", nama_lengkap: "", password: "" });
+              setForm({ nim: "", nama_lengkap: "", angkatan: 0, password: "" });
               setShowModal(true);
             }}
             className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-indigo-900/20"

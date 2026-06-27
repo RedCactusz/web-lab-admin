@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { authService } from "@/app/services/authService";
 import { peminjamanService } from "@/app/services/peminjamanService";
-import type { Peminjaman, PengembalianItem } from "@/app/types/peminjaman";
+import type { Peminjaman, PengembalianItem, PeminjamanItem } from "@/app/types/peminjaman";
 import PeminjamanCard from "./_features/PeminjamanCard";
 import DetailModal from "./_features/DetailModal";
 import TolakModal from "./_features/TolakModal";
@@ -12,8 +12,15 @@ import KonfirmasiModal from "./_features/KonfirmasiModal";
 
 type TabFilter = "semua" | "pending" | "diproses" | "selesai";
 
+interface PengajarUser {
+  nama_lengkap: string;
+  nip?: string;
+  praktikum?: string;
+  role?: string;
+}
+
 export default function PeminjamanPage() {
-  const [pengajar, setPengajar] = useState<any>(null);
+  const [pengajar, setPengajar] = useState<PengajarUser | null>(null);
   const [peminjaman, setPeminjaman] = useState<Peminjaman[]>([]);
   const [activeTab, setActiveTab] = useState<TabFilter>("semua");
   const [detailItem, setDetailItem] = useState<Peminjaman | null>(null);
@@ -22,11 +29,16 @@ export default function PeminjamanPage() {
   const [konfirmasiItem, setKonfirmasiItem] = useState<Peminjaman | null>(null);
 
   useEffect(() => {
-    const data = authService.getPengajarFromStorage();
-    if (data) {
-      setPengajar(data);
-      peminjamanService.getByPengajar().then((all) => setPeminjaman(all));
-    }
+    const initializeData = async () => {
+      const data = authService.getPengajarFromStorage();
+      if (data) {
+        setPengajar(data);
+        const all = await peminjamanService.getByPengajar();
+        setPeminjaman(all);
+      }
+    };
+
+    initializeData();
   }, []);
 
   const refreshData = async () => {
@@ -45,7 +57,7 @@ export default function PeminjamanPage() {
     refreshData();
   };
 
-  const handleRevisi = async (id: number, revisedItems: any[], catatan: string) => {
+  const handleRevisi = async (id: number, revisedItems: PeminjamanItem[], catatan: string) => {
     await peminjamanService.revisiByPengajar(id, revisedItems, catatan);
     setRevisiItem(null);
     refreshData();

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { superAdminService, type GalleryData } from "@/app/services/superAdminService";
 
 export default function KelolaGalleryPage() {
@@ -16,14 +17,14 @@ export default function KelolaGalleryPage() {
     is_published: true,
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = async () => {
     const data = await superAdminService.gallery.getAll();
     setData(data);
   };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const filtered = data.filter((item) =>
     item.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -113,7 +114,7 @@ export default function KelolaGalleryPage() {
                 filtered.map((item) => (
                   <tr key={item.id} className="bg-white hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
-                      <img src={item.image} alt={item.title} className="w-12 h-12 object-cover rounded-lg" />
+                      <Image src={item.image} alt={item.title} width={48} height={48} className="w-12 h-12 object-cover rounded-lg" />
                     </td>
                     <td className="px-4 py-3 font-semibold text-gray-900">{item.title}</td>
                     <td className="px-4 py-3">

@@ -35,8 +35,9 @@ export default function RegisterPage() {
 
       alert("Registrasi berhasil! Silakan hubungi Administrator untuk verifikasi akun Anda.");
       router.push("/super-admin/login");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Terjadi kesalahan saat mendaftar";
+      setError(message);
     } finally {
       setLoading(false);
     }

@@ -22,10 +22,6 @@ export default function TabJadwal({ slug, onRefresh }: TabJadwalProps) {
     catatan: "",
   });
 
-  useEffect(() => {
-    loadData();
-  }, [slug]);
-
   const loadData = async () => {
     try {
       const res = await praktikumManagementService.getJadwal(slug);
@@ -34,6 +30,10 @@ export default function TabJadwal({ slug, onRefresh }: TabJadwalProps) {
       console.error("Gagal memuat jadwal:", error);
     }
   };
+
+  useEffect(() => {
+    loadData();
+  }, [slug]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

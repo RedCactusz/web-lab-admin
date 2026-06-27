@@ -19,13 +19,13 @@ export default function InventarisPage() {
   const [detailItem, setDetailItem] = useState<Inventaris | null>(null);
 
   useEffect(() => {
+    const loadData = async () => {
+      const data = await inventarisService.getAll();
+      setData(data);
+    };
+
     loadData();
   }, []);
-
-  const loadData = async () => {
-    const data = await inventarisService.getAll();
-    setData(data);
-  };
 
   const refreshData = async () => {
     const data = await inventarisService.getAll();

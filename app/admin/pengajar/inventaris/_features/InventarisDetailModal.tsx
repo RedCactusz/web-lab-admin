@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { type Inventaris } from "@/app/services/inventarisService";
 
 interface InventarisDetailModalProps {
@@ -67,9 +68,11 @@ export default function InventarisDetailModal({
         <div className="p-6 space-y-4">
           {hasPhotos ? (
             <div className="relative rounded-xl overflow-hidden bg-gray-100">
-              <img
+              <Image
                 src={item.foto[currentPhotoIndex]}
                 alt={item.nama}
+                width={800}
+                height={256}
                 className="w-full h-64 object-cover"
               />
 

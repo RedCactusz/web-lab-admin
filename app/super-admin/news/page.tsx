@@ -18,14 +18,14 @@ export default function KelolaNewsPage() {
     is_published: true,
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = async () => {
     const data = await superAdminService.news.getAll();
     setData(data);
   };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const filtered = data.filter((item) =>
     item.title.toLowerCase().includes(search.toLowerCase()) ||

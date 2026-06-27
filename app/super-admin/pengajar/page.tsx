@@ -23,10 +23,6 @@ export default function KelolaPengajarPage() {
     is_active: true,
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = async () => {
     try {
       const pengajarRes = await superAdminService.pengajar.getAll();
@@ -38,6 +34,10 @@ export default function KelolaPengajarPage() {
       console.error("Gagal memuat data:", error);
     }
   };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const filtered = data.filter(
     (d) =>
@@ -173,13 +173,11 @@ export default function KelolaPengajarPage() {
                   <tr key={item.id} className="bg-white hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3 font-semibold text-gray-900">{item.nama_lengkap}</td>
                     <td className="px-4 py-3 text-gray-600 font-mono text-xs">{item.nip || "-"}</td>
-                    <td className="px-4 py-3 text-gray-600">{item.username || (item.user && item.user.username) || "-"}</td>
+                    <td className="px-4 py-3 text-gray-600">{item.username || "-"}</td>
                     <td className="px-4 py-3 text-gray-600">
                       {(() => {
-                        const pVal = item.praktikum || item.slug;
-                        const lookupValue = (pVal && typeof pVal === 'object')
-                          ? (pVal.slug || pVal.id)
-                          : pVal;
+                        const pVal = item.praktikum;
+                        const lookupValue = pVal;
 
                         const cocok = praktikumOptions.find(p =>
                           String(p.slug) === String(lookupValue) ||

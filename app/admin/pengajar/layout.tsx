@@ -13,6 +13,12 @@ interface MenuItem {
   showBadge?: boolean;
 }
 
+interface PengajarUser {
+  nama_lengkap: string;
+  nip?: string;
+  praktikum?: string;
+}
+
 const MENU_ITEMS: MenuItem[] = [
   { label: "Penilaian", icon: "🏠", href: "/admin/pengajar/penilaian" },
   { label: "Inventaris", icon: "📦", href: "/admin/pengajar/inventaris" },
@@ -23,19 +29,22 @@ export default function PengajarLayout({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<PengajarUser | null>(null);
   const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
-    const data = authService.getPengajarFromStorage();
-    if (data) {
-      setUser(data);
-      if (data.praktikum) {
-        peminjamanService.getPendingByPraktikum(data.praktikum).then((pending) => {
+    const initializeUser = async () => {
+      const data = authService.getPengajarFromStorage();
+      if (data) {
+        setUser(data);
+        if (data.praktikum) {
+          const pending = await peminjamanService.getPendingByPraktikum(data.praktikum);
           setPendingCount(pending.length);
-        });
+        }
       }
-    }
+    };
+
+    initializeUser();
   }, []);
 
   const handleLogout = () => {

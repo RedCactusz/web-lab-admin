@@ -1,7 +1,11 @@
 "use client";
 
 interface PengajarHeaderProps {
-  pengajar: any;
+  pengajar: {
+    nama_lengkap: string;
+    praktikumNama?: string;
+    praktikum?: string;
+  };
 }
 
 export default function PengajarHeader({ pengajar }: PengajarHeaderProps) {
