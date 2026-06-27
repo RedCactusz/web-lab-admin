@@ -38,8 +38,8 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
     }
   }, [pathname]);
 
-  const handleLogout = () => {
-    superAdminAuthService.logout();
+  const handleLogout = async () => {
+    await superAdminAuthService.logout();
     window.location.href = "/super-admin/login";
   };
 

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { authService } from "@/app/services/authService";
 import { supabase } from "@/lib/supabase";
 
 interface SidebarProps {
@@ -96,7 +96,7 @@ export default function Sidebar({ user, isOpen, setIsOpen }: SidebarProps) {
 
         <div className="absolute bottom-10 left-0 right-0 px-4">
           <button
-            onClick={() => { localStorage.clear(); window.location.href = "/"; }}
+            onClick={async () => { await authService.logout(); window.location.href = "/"; }}
             className={`w-full flex items-center gap-4 p-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all border border-red-500/20 ${!isOpen && 'justify-center'}`}
           >
             <span>🚪</span>
