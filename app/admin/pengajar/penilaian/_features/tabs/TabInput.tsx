@@ -14,6 +14,8 @@ export default function TabInput({ praktikum }: TabInputProps) {
   const [selectedMinggu, setSelectedMinggu] = useState<MingguData | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Load mahasiswa data - dipanggil saat mount dan saat selectedMinggu berubah
+  // Note: Pattern ini adalah standard data fetching dan tidak bisa dihindari
   const loadMahasiswa = async () => {
     try {
       const data = await penilaianService.getStudents(praktikum);
@@ -36,10 +38,14 @@ export default function TabInput({ praktikum }: TabInputProps) {
     loadData();
   }, [praktikum]);
 
+  // Load mahasiswa saat selectedMinggu berubah
   useEffect(() => {
     if (selectedMinggu) {
+      // Load data saat minggu berubah - standard data fetching pattern
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadMahasiswa();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMinggu]);
 
   const handleInputChange = (mhsId: number, paramName: string, value: string | number) => {

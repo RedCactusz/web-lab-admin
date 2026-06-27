@@ -12,14 +12,14 @@ export const SKOR_PRESENSI: { [key: string]: number } = {
   "Alfa": 0
 };
 
-export const hitungRataRataLaporan = (laporan: any) => {
+export const hitungRataRataLaporan = (laporan: Record<string, number | null | undefined>) => {
   if (!laporan) return 0;
   const nilai = [laporan.bab1, laporan.bab2, laporan.bab3, laporan.bab4, laporan.bab5];
   const total = nilai.reduce((acc, curr) => acc + (curr || 0), 0);
   return total / 5;
 };
 
-export const hitungNilaiPekan = (dataPekan: any, parameters?: any[]) => {
+export const hitungNilaiPekan = (dataPekan: Record<string, unknown>, parameters?: Array<{ nama: string; tipe: string; bobot: string; max_nilai: number }>) => {
   if (parameters && parameters.length > 0) {
     let total = 0;
     for (const param of parameters) {

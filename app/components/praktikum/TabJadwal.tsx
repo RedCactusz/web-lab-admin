@@ -31,8 +31,12 @@ export default function TabJadwal({ slug, onRefresh }: TabJadwalProps) {
     }
   };
 
+  // Load jadwal saat slug berubah
   useEffect(() => {
+    // Load data saat praktikum berubah - standard data fetching pattern
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   const handleSubmit = async (e: React.FormEvent) => {

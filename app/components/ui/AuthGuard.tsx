@@ -1,5 +1,5 @@
 "use client";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 interface AuthGuardProps {
@@ -10,28 +10,27 @@ interface AuthGuardProps {
 
 export default function AuthGuard({ storageKey, redirectTo, children }: AuthGuardProps) {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isReady, setIsReady] = useState(false);
+  const hasRedirectedRef = useRef(false);
+
+  // Derived state: cek localStorage tanpa trigger re-render
+  const isAuthenticated = useMemo(() => {
+    return !!localStorage.getItem(storageKey);
+  }, [storageKey]);
 
   useLayoutEffect(() => {
-    const user = localStorage.getItem(storageKey);
-
-    if (user) {
-      setIsAuthenticated(true);
-      setIsReady(true);
-      return;
+    // Hanya redirect jika belum ada user dan belum pernah redirect
+    if (!isAuthenticated && !hasRedirectedRef.current) {
+      hasRedirectedRef.current = true;
+      if (redirectTo) {
+        router.replace(redirectTo);
+      } else {
+        router.replace(storageKey === "user_pengajar" ? "/pengajar" : "/mahasiswa");
+      }
     }
+  }, [storageKey, redirectTo, router, isAuthenticated]);
 
-    // Tidak ada yang login, redirect ke halaman login sesuai role
-    setIsReady(true);
-    if (redirectTo) {
-      router.replace(redirectTo);
-    } else {
-      router.replace(storageKey === "user_pengajar" ? "/pengajar" : "/mahasiswa");
-    }
-  }, [storageKey, redirectTo, router]);
-
-  if (!isReady) {
+  // Tampilkan loading jika belum terautentikasi (sedang redirect)
+  if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center space-y-4">
@@ -40,10 +39,6 @@ export default function AuthGuard({ storageKey, redirectTo, children }: AuthGuar
         </div>
       </div>
     );
-  }
-
-  if (!isAuthenticated) {
-    return null; // Will redirect in the effect
   }
 
   return <>{children}</>;

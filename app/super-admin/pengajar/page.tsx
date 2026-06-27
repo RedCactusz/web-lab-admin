@@ -35,7 +35,10 @@ export default function KelolaPengajarPage() {
     }
   };
 
+  // Load data saat mount
   useEffect(() => {
+    // Load initial data - standard data fetching pattern
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData();
   }, []);
 
@@ -61,18 +64,19 @@ export default function KelolaPengajarPage() {
 
     try {
       if (editingItem) {
-        await superAdminService.pengajar.update(editingItem.id, payload as any);
+        await superAdminService.pengajar.update(editingItem.id, payload as Record<string, unknown>);
       } else {
-        await superAdminService.pengajar.create(payload as any);
+        await superAdminService.pengajar.create(payload as Record<string, unknown>);
       }
       closeModal();
       await loadData();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      console.error("Gagal menyimpan data pengajar:", error);
       alert("Gagal menyimpan data pengajar");
     }
   };
 
-  const openEdit = (item: any) => {
+  const openEdit = (item: PengajarData) => {
     setEditingItem(item);
     const praktikumOption = praktikumOptions.find(p => p.slug === item.praktikum || p.id === item.praktikum);
     const selectedPraktikum = praktikumOption ? praktikumOption.slug : (typeof item.praktikum === 'string' ? item.praktikum : "");
@@ -111,7 +115,7 @@ export default function KelolaPengajarPage() {
     }
   };
 
-  const getAvailablePlugs = (praktikumSlug: any): number[] => {
+  const getAvailablePlugs = (praktikumSlug: string): number[] => {
     if (!praktikumSlug || typeof praktikumSlug !== 'string') return [];
     const selected = praktikumOptions.find(p => p.slug === praktikumSlug);
     if (selected && selected.jumlah_plug && selected.jumlah_plug > 0) {

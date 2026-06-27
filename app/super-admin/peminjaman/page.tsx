@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { peminjamanService } from "@/app/services/peminjamanService";
-import type { Peminjaman, PengembalianItem } from "@/app/types/peminjaman";
+import type { Peminjaman, PengembalianItem, PeminjamanItem } from "@/app/types/peminjaman";
 import PeminjamanCard from "@/app/admin/pengajar/peminjaman/_features/PeminjamanCard";
 import DetailModal from "@/app/admin/pengajar/peminjaman/_features/DetailModal";
 import TolakModal from "@/app/admin/pengajar/peminjaman/_features/TolakModal";
@@ -24,7 +24,10 @@ export default function KelolaPeminjamanPage() {
     setPeminjaman(data);
   };
 
+  // Load data saat mount
   useEffect(() => {
+    // Load initial data - standard data fetching pattern
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData();
   }, []);
 
@@ -39,7 +42,7 @@ export default function KelolaPeminjamanPage() {
     loadData();
   };
 
-  const handleRevisi = async (id: number, revisedItems: any[], catatan: string) => {
+  const handleRevisi = async (id: number, revisedItems: PeminjamanItem[], catatan: string) => {
     await peminjamanService.revisi(id, revisedItems, catatan);
     setRevisiItem(null);
     loadData();

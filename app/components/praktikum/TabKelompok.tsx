@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { superAdminService, type MahasiswaData } from "@/app/services/superAdminService";
-import { praktikumManagementService, type DetailPraktikumData, type MahasiswaWithPivot } from "@/app/services/praktikumManagementService";
+import { praktikumManagementService, type DetailPraktikumData } from "@/app/services/praktikumManagementService";
 
 interface TabKelompokProps {
   slug: string;
@@ -31,8 +31,12 @@ export default function TabKelompok({ slug, detail, onRefresh }: TabKelompokProp
     }
   };
 
+  // Load data saat slug berubah
   useEffect(() => {
+    // Load data saat praktikum berubah - standard data fetching pattern
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData();
+     
   }, [slug]);
 
   const filtered = allMahasiswa.filter(

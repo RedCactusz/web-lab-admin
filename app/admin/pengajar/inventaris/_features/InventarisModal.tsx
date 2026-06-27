@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useLayoutEffect } from "react";
+import { useState } from "react";
 import { type Inventaris } from "@/app/services/inventarisService";
 import ImageUploader from "./ImageUploader";
 
@@ -27,36 +27,35 @@ const KONDISI_OPTIONS = [
 export default function InventarisModal({ item, onClose, onSubmit }: InventarisModalProps) {
   const isEdit = !!item;
 
-  const [form, setForm] = useState({
-    kode_alat: "",
-    nama: "",
-    kategori: "surveying" as Inventaris["kategori"],
-    merk: "",
-    tipe: "",
-    kondisi: "baik" as Inventaris["kondisi"],
-    jumlah: 0,
-    lokasi: "",
-    keterangan: "",
-    foto: [] as string[],
-  });
-
-  // Sync form with item using useLayoutEffect
-  useLayoutEffect(() => {
-    if (item) {
-      setForm({
-        kode_alat: item.kode_alat,
-        nama: item.nama,
-        kategori: item.kategori,
-        merk: item.merk,
-        tipe: item.tipe,
-        kondisi: item.kondisi,
-        jumlah: item.jumlah,
-        lokasi: item.lokasi,
-        keterangan: item.keterangan,
-        foto: item.foto || [],
-      });
+  // Lazy initializer: sync form dengan item atau default
+  const [form, setForm] = useState(() => {
+    if (!item) {
+      return {
+        kode_alat: "",
+        nama: "",
+        kategori: "surveying" as Inventaris["kategori"],
+        merk: "",
+        tipe: "",
+        kondisi: "baik" as Inventaris["kondisi"],
+        jumlah: 0,
+        lokasi: "",
+        keterangan: "",
+        foto: [] as string[],
+      };
     }
-  }, [item]);
+    return {
+      kode_alat: item.kode_alat,
+      nama: item.nama,
+      kategori: item.kategori,
+      merk: item.merk,
+      tipe: item.tipe,
+      kondisi: item.kondisi,
+      jumlah: item.jumlah,
+      lokasi: item.lokasi,
+      keterangan: item.keterangan,
+      foto: item.foto || [],
+    };
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -188,8 +187,6 @@ export default function InventarisModal({ item, onClose, onSubmit }: InventarisM
           </div>
 
           <ImageUploader
-            namaAlat={form.nama || "Alat"}
-            kodeAlat={form.kode_alat || "XXX-000"}
             existingPhotos={form.foto}
             onPhotosChange={(photos) => setForm({ ...form, foto: photos })}
           />

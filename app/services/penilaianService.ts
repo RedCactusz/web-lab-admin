@@ -35,7 +35,7 @@ export interface MahasiswaNilai {
   plug: number | null;
   nilai: Array<{
     id: number;
-    nilai_harian: Record<string, any>[];
+    nilai_harian: Record<string, unknown>[];
     nilai_akhir: string | number;
   }>;
 }
@@ -72,8 +72,8 @@ export const penilaianService = {
   async updateGrade(slug: string, nim: string, gradeData: {
     kelompok?: number;
     plug?: number;
-    nilai_harian?: Record<string, any>[];
-  }): Promise<any | null> {
+    nilai_harian?: Record<string, unknown>[];
+  }): Promise<unknown | null> {
     const response = await fetch(`${API_URL}/pengajar/${slug}/grades/${nim}`, {
       method: 'PUT',
       headers: getHeaders(),
@@ -84,14 +84,14 @@ export const penilaianService = {
     return json.data;
   },
 
-  async getStats(slug: string): Promise<any | null> {
+  async getStats(slug: string): Promise<unknown | null> {
     const response = await fetch(`${API_URL}/pengajar/${slug}/stats`, { headers: getHeaders() });
     if (!response.ok) return null;
     const json = await response.json();
     return json.data;
   },
 
-  hitungNilaiPekan: (dataPekan: any, parameters: ParameterData[]): number => {
+  hitungNilaiPekan: (dataPekan: Record<string, unknown>, parameters: ParameterData[]): number => {
     if (!dataPekan || typeof dataPekan !== 'object' || !parameters.length) return 0;
 
     let total = 0;
@@ -111,7 +111,7 @@ export const penilaianService = {
     return parseFloat(total.toFixed(2));
   },
 
-  hitungNilaiAkhir: (nilaiHarian: any[], mingguList: MingguData[]): number => {
+  hitungNilaiAkhir: (nilaiHarian: Record<string, unknown>[], mingguList: MingguData[]): number => {
     if (!nilaiHarian?.length || !mingguList?.length) return 0;
 
     let totalBobot = 0;

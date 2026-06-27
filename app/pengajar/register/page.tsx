@@ -52,8 +52,9 @@ export default function RegisterPengajarPage() {
       } else {
         alert("Pendaftaran gagal. Silakan coba lagi atau hubungi administrator.");
       }
-    } catch (error: any) {
-      alert("Error: " + error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      alert("Error: " + message);
     } finally {
       setLoading(false);
     }
