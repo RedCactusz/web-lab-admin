@@ -48,7 +48,7 @@ export default function PengajarLayout({ children }: { children: React.ReactNode
   }, []);
 
   const handleLogout = () => {
-    localStorage.clear();
+    authService.logout();
     router.push("/");
   };
 
