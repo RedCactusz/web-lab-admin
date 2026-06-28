@@ -52,21 +52,21 @@ export default function KelolaPengajarPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = {
+    const payload: Omit<PengajarData, "id"> = {
       nama_lengkap: form.nama_lengkap,
-      nip: form.nip || null,
+      nip: form.nip || "",
       username: form.username,
       password: form.password,
-      praktikum: form.praktikum.trim() !== "" ? form.praktikum : null, 
+      praktikum: form.praktikum.trim() !== "" ? form.praktikum : "",
       plug: form.plug,
       is_active: form.is_active,
     };
 
     try {
       if (editingItem) {
-        await superAdminService.pengajar.update(editingItem.id, payload as Record<string, unknown>);
+        await superAdminService.pengajar.update(editingItem.id, payload);
       } else {
-        await superAdminService.pengajar.create(payload as Record<string, unknown>);
+        await superAdminService.pengajar.create(payload);
       }
       closeModal();
       await loadData();
@@ -78,13 +78,13 @@ export default function KelolaPengajarPage() {
 
   const openEdit = (item: PengajarData) => {
     setEditingItem(item);
-    const praktikumOption = praktikumOptions.find(p => p.slug === item.praktikum || p.id === item.praktikum);
-    const selectedPraktikum = praktikumOption ? praktikumOption.slug : (typeof item.praktikum === 'string' ? item.praktikum : "");
+    const praktikumOption = praktikumOptions.find(p => p.slug === item.praktikum || String(p.id) === item.praktikum);
+    const selectedPraktikum = praktikumOption ? praktikumOption.slug : item.praktikum;
 
     setForm({
       nama_lengkap: item.nama_lengkap,
       nip: item.nip || "",
-      username: item.username || (item.user && item.user.username) || "",
+      username: item.username || "",
       password: "",
       praktikum: selectedPraktikum,
       plug: item.plug || [],

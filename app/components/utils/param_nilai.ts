@@ -15,7 +15,7 @@ export const SKOR_PRESENSI: { [key: string]: number } = {
 export const hitungRataRataLaporan = (laporan: Record<string, number | null | undefined>) => {
   if (!laporan) return 0;
   const nilai = [laporan.bab1, laporan.bab2, laporan.bab3, laporan.bab4, laporan.bab5];
-  const total = nilai.reduce((acc, curr) => acc + (curr || 0), 0);
+  const total = nilai.reduce((acc: number, curr) => (acc ?? 0) + (curr || 0), 0);
   return total / 5;
 };
 
@@ -25,10 +25,10 @@ export const hitungNilaiPekan = (dataPekan: Record<string, unknown>, parameters?
     for (const param of parameters) {
       const nilaiParam = dataPekan?.[param.nama];
       if (param.tipe === 'presensi') {
-        const skor = SKOR_PRESENSI[nilaiParam] ?? 0;
+        const skor = SKOR_PRESENSI[String(nilaiParam ?? '')] ?? 0;
         total += skor * parseFloat(param.bobot);
       } else {
-        const nilaiNumeric = typeof nilaiParam === 'number' ? nilaiParam : (parseFloat(nilaiParam) || 0);
+        const nilaiNumeric = typeof nilaiParam === 'number' ? nilaiParam : (parseFloat(String(nilaiParam ?? '0')) || 0);
         const normalized = param.max_nilai > 0 ? (nilaiNumeric / param.max_nilai) * 100 : 0;
         total += normalized * parseFloat(param.bobot);
       }
@@ -38,10 +38,10 @@ export const hitungNilaiPekan = (dataPekan: Record<string, unknown>, parameters?
 
   if (!dataPekan || typeof dataPekan !== 'object') return 0;
 
-  const skorHadir = SKOR_PRESENSI[dataPekan.hadir] || 0;
-  const skorLap = dataPekan.lapangan || 0;
-  const skorKuis = dataPekan.kuis || 0;
-  const rataLaporan = hitungRataRataLaporan(dataPekan.laporan);
+  const skorHadir = SKOR_PRESENSI[String(dataPekan.hadir ?? '')] || 0;
+  const skorLap = typeof dataPekan.lapangan === 'number' ? dataPekan.lapangan : 0;
+  const skorKuis = typeof dataPekan.kuis === 'number' ? dataPekan.kuis : 0;
+  const rataLaporan = hitungRataRataLaporan(dataPekan.laporan as Record<string, number | null | undefined>);
 
   const total =
     (skorHadir * DEFAULT_BOBOT_PENILAIAN.kehadiran) +

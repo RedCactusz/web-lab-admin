@@ -1,8 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_LARAVEL_API_URL || 'http://localhost:8001/admin_api';
 
-function extractData(json: unknown): unknown {
-  if (!json || typeof json !== 'object') return json;
-  return (json as { data?: unknown }).data ?? json;
+function extractData<T>(json: unknown): T {
+  if (!json || typeof json !== 'object') return json as T;
+  return ((json as { data?: T }).data ?? json) as T;
 }
 
 export interface Inventaris {
@@ -31,7 +31,7 @@ export const inventarisService = {
         },
       });
       if (!response.ok) return [];
-      return extractData(await response.json());
+      return extractData<Inventaris[]>(await response.json());
     } catch {
       return [];
     }
@@ -48,7 +48,7 @@ export const inventarisService = {
         },
       });
       if (!response.ok) return null;
-      return extractData(await response.json());
+      return extractData<Inventaris | null>(await response.json());
     } catch {
       return null;
     }
@@ -67,7 +67,7 @@ export const inventarisService = {
         body: JSON.stringify(item),
       });
       if (!response.ok) return null;
-      return extractData(await response.json());
+      return extractData<Inventaris | null>(await response.json());
     } catch {
       return null;
     }
@@ -86,7 +86,7 @@ export const inventarisService = {
         body: JSON.stringify(updates),
       });
       if (!response.ok) return null;
-      return extractData(await response.json());
+      return extractData<Inventaris | null>(await response.json());
     } catch {
       return null;
     }

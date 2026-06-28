@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { superAdminService } from "@/app/services/superAdminService";
+import { superAdminService, type StatsData } from "@/app/services/superAdminService";
 
 export default function SuperAdminDashboard() {
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<StatsData>({
     pengajar: 0,
     mahasiswa: 0,
     inventaris_baik: 0,

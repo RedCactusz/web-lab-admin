@@ -4,10 +4,12 @@ import { useState } from "react";
 import { type Inventaris } from "@/app/services/inventarisService";
 import ImageUploader from "./ImageUploader";
 
+type InventarisFormData = Omit<Inventaris, 'id'>;
+
 interface InventarisModalProps {
   item?: Inventaris;
   onClose: () => void;
-  onSubmit: (data: Inventaris) => void;
+  onSubmit: (data: InventarisFormData) => void;
 }
 
 const KATEGORI_OPTIONS = [
@@ -28,19 +30,19 @@ export default function InventarisModal({ item, onClose, onSubmit }: InventarisM
   const isEdit = !!item;
 
   // Lazy initializer: sync form dengan item atau default
-  const [form, setForm] = useState(() => {
+  const [form, setForm] = useState<InventarisFormData>(() => {
     if (!item) {
       return {
         kode_alat: "",
         nama: "",
-        kategori: "surveying" as Inventaris["kategori"],
+        kategori: "surveying",
         merk: "",
         tipe: "",
-        kondisi: "baik" as Inventaris["kondisi"],
+        kondisi: "baik",
         jumlah: 0,
         lokasi: "",
         keterangan: "",
-        foto: [] as string[],
+        foto: [],
       };
     }
     return {

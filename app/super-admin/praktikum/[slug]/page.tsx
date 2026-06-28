@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { praktikumManagementService } from "@/app/services/praktikumManagementService";
+import { praktikumManagementService, type DetailPraktikumData } from "@/app/services/praktikumManagementService";
 import TabKelompok from "@/app/components/praktikum/TabKelompok";
 import TabJadwal from "@/app/components/praktikum/TabJadwal";
 import TabPenilaian from "@/app/components/praktikum/TabPenilaian";
@@ -21,7 +21,7 @@ export default function PraktikumManagementPage() {
   const slug = params.slug as string;
 
   const [activeTab, setActiveTab] = useState<TabKey>("kelompok");
-  const [detail, setDetail] = useState(null);
+  const [detail, setDetail] = useState<DetailPraktikumData | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadDetail = async () => {

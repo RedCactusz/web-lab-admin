@@ -99,10 +99,10 @@ export const penilaianService = {
       const nilaiParam = dataPekan[param.nama];
 
       if (param.tipe === 'presensi') {
-        const skor = SKOR_PRESENSI[nilaiParam] ?? 0;
+        const skor = SKOR_PRESENSI[String(nilaiParam ?? '')] ?? 0;
         total += skor * parseFloat(param.bobot);
       } else {
-        const nilaiNumeric = typeof nilaiParam === 'number' ? nilaiParam : (parseFloat(nilaiParam) || 0);
+        const nilaiNumeric = typeof nilaiParam === 'number' ? nilaiParam : (parseFloat(String(nilaiParam ?? '0')) || 0);
         const normalized = param.max_nilai > 0 ? (nilaiNumeric / param.max_nilai) * 100 : 0;
         total += normalized * parseFloat(param.bobot);
       }

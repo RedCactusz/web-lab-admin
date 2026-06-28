@@ -44,13 +44,16 @@ export default function TabTransparansi({ praktikum }: TabTransparansiProps) {
     const headers = ["Pekan", "Topik", ...mingguList.flatMap(m => m.parameters.map(p => p.nama)), "NA"];
     const nilaiData = selectedMhs.nilai?.[0];
     const nilaiHarian = nilaiData?.nilai_harian || [];
-    const rows = mingguList.map((m, i) => {
+    const rows: (string | number)[][] = mingguList.map((m, i) => {
       const data = nilaiHarian[i] || {};
       return [
         `P${m.minggu_ke}`,
         m.topik || "-",
-        ...m.parameters.map(p => data[p.nama] ?? 0),
-        i === mingguList.length - 1 ? (nilaiData?.nilai_akhir || 0) : "",
+        ...m.parameters.map(p => {
+          const val = data[p.nama];
+          return val !== undefined ? (typeof val === 'number' ? val : String(val)) : 0;
+        }),
+        i === mingguList.length - 1 ? (nilaiData?.nilai_akhir ?? 0) : "",
       ];
     });
     penilaianService.exportCSV(`transparansi_${selectedMhs.nim}`, headers, rows);
@@ -146,7 +149,7 @@ export default function TabTransparansi({ praktikum }: TabTransparansiProps) {
                       <td className="px-4 py-3 text-slate-200">{m.topik || "-"}</td>
                       {m.parameters.map(p => (
                         <td key={p.nama} className="px-2 py-3 text-center border-l border-slate-800/50">
-                          {dataPekan[p.nama] ?? "-"}
+                          {String(dataPekan[p.nama] ?? "-")}
                         </td>
                       ))}
                       <td className="px-4 py-3 text-center font-bold bg-blue-900/10 text-blue-300 border-l border-slate-700">

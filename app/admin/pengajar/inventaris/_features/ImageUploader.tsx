@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
+import NextImage from "next/image";
 
 interface ImageUploaderProps {
   existingPhotos: string[];
@@ -116,7 +116,7 @@ export default function ImageUploader({
         <div className="flex flex-wrap gap-3">
           {existingPhotos.map((photo, index) => (
             <div key={index} className="relative group">
-              <Image
+              <NextImage
                 src={photo}
                 alt={`Foto ${index + 1}`}
                 width={96}

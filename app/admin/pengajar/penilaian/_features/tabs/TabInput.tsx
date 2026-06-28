@@ -52,7 +52,7 @@ export default function TabInput({ praktikum }: TabInputProps) {
     setMahasiswa(prev => prev.map(m => {
       if (m.id !== mhsId) return m;
       const nilaiData = m.nilai?.[0];
-      const nilaiHarian: Record<string, string | number>[] = nilaiData?.nilai_harian ? [...nilaiData.nilai_harian] : [];
+      const nilaiHarian: Record<string, unknown>[] = nilaiData?.nilai_harian ? [...nilaiData.nilai_harian] : [];
       const mingguIndex = (selectedMinggu?.minggu_ke ?? 1) - 1;
 
       if (!nilaiHarian[mingguIndex]) {
@@ -182,7 +182,7 @@ export default function TabInput({ praktikum }: TabInputProps) {
                             <td key={p.nama} className="p-2">
                               {p.tipe === 'presensi' ? (
                                 <select
-                                  value={dataPekan[p.nama] || "Alfa"}
+                                  value={String(dataPekan[p.nama] || "Alfa")}
                                   onChange={(e) => handleInputChange(m.id, p.nama, e.target.value)}
                                   className={`w-full bg-slate-800 border-none rounded-lg text-[10px] p-2 outline-none font-bold ${
                                     dataPekan[p.nama] === 'Alfa' ? 'text-red-400' : 'text-green-400'
@@ -198,7 +198,7 @@ export default function TabInput({ praktikum }: TabInputProps) {
                                   type="number"
                                   min={0}
                                   max={p.max_nilai}
-                                  value={dataPekan[p.nama] ?? 0}
+                                  value={Number(dataPekan[p.nama] ?? 0)}
                                   onChange={(e) => handleInputChange(m.id, p.nama, parseFloat(e.target.value) || 0)}
                                   className="w-14 bg-slate-800/40 border border-slate-700/50 rounded-lg p-2 text-center text-sm font-bold text-white focus:border-blue-500 focus:bg-slate-800 outline-none transition-all"
                                 />
