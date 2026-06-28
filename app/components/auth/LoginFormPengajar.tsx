@@ -1,52 +1,57 @@
 "use client";
 
-import { useState, useEffect } from "react"; // 1. Tambahkan useEffect
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authService } from "@/app/services/authService";
 import { praktikumService, type PraktikumData } from "@/app/services/praktikumService";
+import { useToast } from "@/app/components/ui/Toast";
 
 export default function LoginForm() {
   const router = useRouter();
+  const toast = useToast();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [praktikumOptions, setPraktikumOptions] = useState<PraktikumData[]>([]); // 3. State untuk menampung data DB
-  const [praktikum, setPraktikum] = useState(""); // Default kosong dulu sebelum data di-load
+  const [praktikumOptions, setPraktikumOptions] = useState<PraktikumData[]>([]);
+  const [praktikum, setPraktikum] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 4. Ambil data praktikum asli dari database saat halaman dibuka
   useEffect(() => {
     const fetchPraktikum = async () => {
       try {
         const data = await praktikumService.getAll();
         setPraktikumOptions(data);
         if (data.length > 0) {
-          setPraktikum(data[0].slug); // Set default value ke slug praktikum pertama
+          setPraktikum(data[0].slug);
         }
       } catch (error) {
         console.error("Gagal memuat opsi praktikum:", error);
+        toast.error("Gagal memuat opsi praktikum");
       }
     };
     fetchPraktikum();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // Mencegah halaman reload otomatis
-    setLoading(true);   // Ubah tombol jadi "Memproses..."
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      // Nilai 'praktikum' di sini sekarang otomatis berisi string SLUG asli (ex: "survei-terestris-i")
       const data = await authService.loginPengajar(username, password, praktikum);
 
       if (!data) {
-        alert(`LOGIN GAGAL!\n\nUsername: ${username}\nPraktikum Slug: ${praktikum}\n\nPastikan data pengajar sudah terdaftar di database.`);
+        toast.error(`Login gagal untuk username: ${username}`);
       } else {
         localStorage.setItem("user_pengajar", JSON.stringify(data));
-        router.push("/admin/pengajar/penilaian");
+        toast.success("Login berhasil! Mengarahkan ke dashboard...");
+        setTimeout(() => {
+          router.push("/admin/pengajar/penilaian");
+        }, 1000);
       }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
-      alert("Error Database: " + message);
+      toast.error("Error Database: " + message);
     } finally {
       setLoading(false);
     }

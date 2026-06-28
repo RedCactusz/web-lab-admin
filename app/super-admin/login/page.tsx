@@ -2,28 +2,31 @@
 
 import { useState } from "react";
 import { superAdminAuthService } from "@/app/services/superAdminAuthService";
+import { useToast } from "@/app/components/ui/Toast";
 
 export default function SuperAdminLoginPage() {
-  const [email, setEmail] = useState("");
+  const toast = useToast();
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
-      const result = await superAdminAuthService.login(email, password);
+      const result = await superAdminAuthService.login(username, password);
       if (!result) {
-        setError("Email atau password salah");
+        toast.error("Username atau password salah");
       } else {
         superAdminAuthService.saveToStorage(result.user, result.token);
-        window.location.href = "/super-admin/dashboard";
+        toast.success("Login berhasil! Mengarahkan ke dashboard...");
+        setTimeout(() => {
+          window.location.href = "/super-admin/dashboard";
+        }, 1000);
       }
     } catch {
-      setError("Terjadi kesalahan. Silakan coba lagi.");
+      toast.error("Terjadi kesalahan. Silakan coba lagi.");
     } finally {
       setLoading(false);
     }
@@ -45,8 +48,8 @@ export default function SuperAdminLoginPage() {
             <label className="block text-sm font-semibold text-gray-700 mb-1">Username</label>
             <input
               type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="Masukkan username"
               required
@@ -64,12 +67,6 @@ export default function SuperAdminLoginPage() {
               required
             />
           </div>
-
-          {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl">
-              <p className="text-sm text-red-600 font-medium">{error}</p>
-            </div>
-          )}
 
           <button
             type="submit"
