@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { superAdminAuthService, type SuperAdminUser } from "@/app/services/superAdminAuthService";
+import ToastContainer from "@/app/components/ui/Toast";
 
 interface MenuItem {
   label: string;
@@ -61,8 +62,13 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
     );
   }
 
-  if (pathname === "/super-admin/login") {
-    return <>{children}</>;
+  if (pathname === "/super-admin/login" || pathname === "/super-admin/register") {
+    return (
+      <>
+        {children}
+        <ToastContainer />
+      </>
+    );
   }
 
   return (
@@ -159,6 +165,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
           {children}
         </div>
       </main>
+      <ToastContainer />
     </div>
   );
 }

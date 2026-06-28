@@ -4,9 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authService } from "@/app/services/authService";
 import { praktikumService, type PraktikumData } from "@/app/services/praktikumService";
+import { useToast } from "@/app/components/ui/Toast";
+import ToastContainer from "@/app/components/ui/Toast";
 
 export default function RegisterPengajarPage() {
   const router = useRouter();
+  const toast = useToast();
 
   const [praktikumOptions, setPraktikumOptions] = useState<PraktikumData[]>([]);
   const [loading, setLoading] = useState(false);
@@ -27,9 +30,11 @@ export default function RegisterPengajarPage() {
         setPraktikumOptions(data || []);
       } catch (error) {
         console.error("Gagal memuat opsi praktikum:", error);
+        toast.error("Gagal memuat opsi praktikum");
       }
     };
     fetchPraktikum();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -47,14 +52,14 @@ export default function RegisterPengajarPage() {
       });
 
       if (success) {
-        alert("Pendaftaran berhasil! Silakan masuk.");
+        toast.success("Pendaftaran berhasil! Silakan masuk.");
         router.push("/pengajar");
       } else {
-        alert("Pendaftaran gagal. Silakan coba lagi atau hubungi administrator.");
+        toast.error("Pendaftaran gagal. Silakan coba lagi atau hubungi administrator.");
       }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
-      alert("Error: " + message);
+      toast.error("Error: " + message);
     } finally {
       setLoading(false);
     }
@@ -80,12 +85,13 @@ export default function RegisterPengajarPage() {
   const selectedPraktikum = praktikumOptions.find(p => p.slug === form.praktikum);
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-200">
-        <h1 className="text-2xl font-bold mb-1 text-center text-gray-900">Daftar Akun Pengajar</h1>
-        <p className="text-gray-500 text-center mb-8 text-sm">Buat akun untuk mengakses sistem penilaian</p>
+    <>
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-200">
+          <h1 className="text-2xl font-bold mb-1 text-center text-gray-900">Daftar Akun Pengajar</h1>
+          <p className="text-gray-500 text-center mb-8 text-sm">Buat akun untuk mengakses sistem penilaian</p>
 
-        <form onSubmit={handleRegister} className="space-y-5">
+          <form onSubmit={handleRegister} className="space-y-5">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">Nama Lengkap *</label>
             <input
@@ -194,5 +200,7 @@ export default function RegisterPengajarPage() {
         </form>
       </div>
     </main>
+    <ToastContainer />
+  </>
   );
 }
