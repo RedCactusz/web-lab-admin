@@ -1,7 +1,7 @@
 "use client";
 
 import type { Peminjaman } from "@/app/types/peminjaman";
-import { StatusBadge } from "@/app/types/peminjaman";
+import StatusBadge from "@/app/components/ui/StatusBadge";
 
 interface DetailModalProps {
   item: Peminjaman;

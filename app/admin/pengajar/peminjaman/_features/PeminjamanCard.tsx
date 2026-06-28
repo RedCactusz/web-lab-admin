@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { Peminjaman } from "@/app/types/peminjaman";
-import { StatusBadge } from "@/app/types/peminjaman";
+import StatusBadge from "@/app/components/ui/StatusBadge";
 
 interface PeminjamanCardProps {
   item: Peminjaman;

@@ -14,6 +14,7 @@ export default function AuthGuard({ storageKey, redirectTo, children }: AuthGuar
 
   // Derived state: cek localStorage tanpa trigger re-render
   const isAuthenticated = useMemo(() => {
+    if (typeof window === 'undefined') return false;
     return !!localStorage.getItem(storageKey);
   }, [storageKey]);
 
