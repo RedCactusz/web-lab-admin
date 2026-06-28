@@ -1,4 +1,17 @@
 "use client";
+
+/**
+ * AuthGuard Component
+ *
+ * ⚠️ SHARED COMPONENT — Also exists in:
+ * - lab_sgg-ui/app/components/ui/AuthGuard.tsx
+ * - lab_sgg-admin/app/components/ui/AuthGuard.tsx
+ *
+ * Last Sync: 2026-06-28 - Fase 3.4 SSR localStorage fix
+ *
+ * When modifying: Update BOTH projects & update this date
+ */
+
 import { useLayoutEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
