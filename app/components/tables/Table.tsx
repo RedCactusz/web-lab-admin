@@ -1,3 +1,15 @@
+/**
+ * Table Component
+ *
+ * ⚠️ SHARED COMPONENT — Also exists in:
+ * - lab_sgg-ui/app/components/tables/Table.tsx
+ * - lab_sgg-admin/app/components/tables/Table.tsx
+ *
+ * Last Sync: TBD - Initial sync verification
+ *
+ * When modifying: Update BOTH projects & update this date
+ */
+
 interface Column<T> {
   key: string;
   header: string;
