@@ -18,6 +18,14 @@ export default function AdminLayout() {
           >
             Dashboard
           </NavLink>
+          <NavLink
+            to="/mahasiswa"
+            className={({ isActive }) =>
+              `block rounded-md px-3 py-2 text-sm ${isActive ? 'bg-gray-700' : 'hover:bg-gray-800'}`
+            }
+          >
+            Mahasiswa
+          </NavLink>
         </nav>
       </aside>
       <div className="flex flex-1 flex-col">
