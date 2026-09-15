@@ -18,6 +18,7 @@ export interface MahasiswaListParams {
   role?: 'asisten' | 'mahasiswa'
   page?: number
   perPage?: number
+  sortDirection?: 'asc' | 'desc'
 }
 
 export interface MahasiswaListMeta {
@@ -32,6 +33,13 @@ interface ListResponse {
   meta: MahasiswaListMeta
 }
 
+export interface MahasiswaImportResult {
+  message: string
+  imported: number
+  updated: number
+  failed: { row: number; message: string }[]
+}
+
 export const mahasiswaService = {
   async getAll(params: MahasiswaListParams = {}): Promise<ListResponse> {
     const query = new URLSearchParams()
@@ -40,8 +48,16 @@ export const mahasiswaService = {
     if (params.role) query.set('role', params.role)
     if (params.page !== undefined) query.set('page', String(params.page))
     if (params.perPage !== undefined) query.set('per_page', String(params.perPage))
+    if (params.sortDirection) query.set('sort_direction', params.sortDirection)
 
     const qs = query.toString()
     return api<ListResponse>(`/api/admin/mahasiswa${qs ? `?${qs}` : ''}`)
+  },
+
+  async importCsv(file: File): Promise<MahasiswaImportResult> {
+    const body = new FormData()
+    body.append('file', file)
+
+    return api<MahasiswaImportResult>('/api/admin/mahasiswa/import', { method: 'POST', body })
   },
 }
