@@ -1,4 +1,5 @@
 export * from './api'
+export * from './alat'
 export * from './auth'
 export * from './mahasiswa'
 export * from './praktikum'
