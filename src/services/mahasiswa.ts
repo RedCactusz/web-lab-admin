@@ -6,9 +6,11 @@ export interface Mahasiswa {
   nim: number
   surel: string | null
   angkatan: number
+  praktikum: string[] | null
+  praktikum_plug: Record<string, string> | null
   is_asisten: boolean
-  pengampu: string | null
-  pengampu_plug: string | null
+  pengampu_praktikum: string[] | null
+  pengampu_plug: Record<string, string> | null
   role: 'asisten' | 'mahasiswa'
 }
 
@@ -59,5 +61,15 @@ export const mahasiswaService = {
     body.append('file', file)
 
     return api<MahasiswaImportResult>('/api/admin/mahasiswa/import', { method: 'POST', body })
+  },
+
+  async update(
+    id: number,
+    data: { praktikum: string[]; praktikum_plug: Record<string, string> },
+  ): Promise<Mahasiswa> {
+    return api<Mahasiswa>(`/api/admin/mahasiswa/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    })
   },
 }
