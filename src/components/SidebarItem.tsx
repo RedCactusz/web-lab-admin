@@ -9,9 +9,7 @@ interface SidebarItemProps {
 
 export const SidebarItem: React.FC<SidebarItemProps> = ({ item }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const hasChildren = !!item.children && item.children.length > 0;
-
-    if (hasChildren) {
+    if (item.children && item.children.length > 0) {
         return (
             <div>
                 <button

@@ -20,8 +20,8 @@ const Sidebar: React.FC<SideBarProps> = ({ isOpen, onClose }: SideBarProps) => {
                 const praktikumList = await praktikumService.getAll();
                 const items: MenuItem[] = praktikumList.map((praktikum) => ({
                     id: praktikum.id,
-                    label: praktikum.praktikum_label,
-                    path: `/praktikum/${praktikum.praktikum_slug}`
+                    label: praktikum.label,
+                    path: `/praktikum/${praktikum.slug}`
                 }));
                 setMenuItems(items);
             } catch (error) {
@@ -40,6 +40,8 @@ const Sidebar: React.FC<SideBarProps> = ({ isOpen, onClose }: SideBarProps) => {
             <nav className="flex flex-col px-2">
                 <a href="/" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Dashboard</a>
                 <a href="/mahasiswa" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Mahasiswa</a>
+                <a href="/alat" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Inventaris Alat</a>
+                <a href="/praktikum" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Praktikum</a>
                 {isLoading ? (
                     <p>Loading...</p>
                 ) : (
