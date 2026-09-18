@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { mahasiswaService, ApiError, type Mahasiswa, type MahasiswaListMeta, type MahasiswaImportResult } from '@/services'
+import {
+  mahasiswaService,
+  praktikumService,
+  ApiError,
+  type Mahasiswa,
+  type MahasiswaListMeta,
+  type MahasiswaImportResult,
+  type Praktikum,
+} from '@/services'
 
 const SEARCH_DEBOUNCE_MS = 400
 
@@ -20,6 +28,12 @@ export default function Students() {
   const [uploadResult, setUploadResult] = useState<MahasiswaImportResult | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [editingStudent, setEditingStudent] = useState<Mahasiswa | null>(null)
+  const [praktikumOptions, setPraktikumOptions] = useState<Praktikum[]>([])
+  const [editPlugs, setEditPlugs] = useState<Record<string, string>>({})
+  const [isLoadingOptions, setIsLoadingOptions] = useState(false)
+  const [isSavingEdit, setIsSavingEdit] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -89,6 +103,74 @@ export default function Students() {
 
   const hasActiveFilter = debouncedSearch || angkatan
 
+  const openEditModal = (student: Mahasiswa) => {
+    setEditingStudent(student)
+    setEditError(null)
+    setIsLoadingOptions(true)
+    setEditPlugs(
+      Object.fromEntries(
+        (student.praktikum ?? []).map((slug) => [slug, String(student.praktikum_plug?.[slug] ?? '')]),
+      ),
+    )
+    praktikumService
+      .getAll()
+      .then((options) => setPraktikumOptions(options))
+      .catch((err) => {
+        setEditError(err instanceof ApiError ? err.message : 'Gagal memuat daftar praktikum.')
+      })
+      .finally(() => setIsLoadingOptions(false))
+  }
+
+  const closeEditModal = () => {
+    setEditingStudent(null)
+    setEditPlugs({})
+    setEditError(null)
+  }
+
+  const togglePraktikum = (slug: string) => {
+    setEditPlugs((current) => {
+      if (slug in current) {
+        const next = { ...current }
+        delete next[slug]
+        return next
+      }
+      return { ...current, [slug]: '' }
+    })
+  }
+
+  const handleSaveEdit = () => {
+    if (!editingStudent) return
+
+    const plugs: Record<string, string> = {}
+    for (const [slug, value] of Object.entries(editPlugs)) {
+      const option = praktikumOptions.find((p) => p.slug === slug)
+      if (!option || !option.plugs.some((jadwal) => jadwal.plug === value)) {
+        setEditError('Pilih plug yang tersedia untuk setiap praktikum yang dipilih.')
+        return
+      }
+      plugs[slug] = value
+    }
+
+    setIsSavingEdit(true)
+    setEditError(null)
+
+    mahasiswaService
+      .update(editingStudent.id, {
+        praktikum: Object.keys(plugs),
+        praktikum_plug: plugs,
+      })
+      .then(() => {
+        closeEditModal()
+        setRefreshKey((key) => key + 1)
+      })
+      .catch((err) => {
+        setEditError(err instanceof ApiError ? err.message : 'Gagal menyimpan perubahan.')
+      })
+      .finally(() => {
+        setIsSavingEdit(false)
+      })
+  }
+
   return (
     <div>
       <h1 className="text-2xl font-bold">Daftar Mahasiswa</h1>
@@ -152,18 +234,20 @@ export default function Students() {
               <th className="px-4 py-3">Nama</th>
               <th className="px-4 py-3">Angkatan</th>
               <th className="px-4 py-3">Email</th>
+              <th className="px-4 py-3">Praktikum</th>
+              <th className="px-4 py-3">Aksi</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {isLoading ? (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-gray-500">
+                <td colSpan={6} className="px-4 py-12 text-center text-gray-500">
                   Memuat...
                 </td>
               </tr>
             ) : students.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-gray-500">
+                <td colSpan={6} className="px-4 py-12 text-center text-gray-500">
                   {hasActiveFilter ? 'Tidak ada mahasiswa yang cocok dengan filter.' : 'Belum ada data mahasiswa.'}
                 </td>
               </tr>
@@ -174,6 +258,15 @@ export default function Students() {
                   <td className="px-4 py-3 font-medium">{student.nama}</td>
                   <td className="px-4 py-3">{student.angkatan}</td>
                   <td className="px-4 py-3 text-gray-600">{student.surel ?? '-'}</td>
+                  <td className="px-4 py-3">{student.praktikum?.length ?? 0} praktikum</td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => openEditModal(student)}
+                      className="text-sm text-gray-600 underline hover:text-gray-900"
+                    >
+                      Edit
+                    </button>
+                  </td>
                 </tr>
               ))
             )}
@@ -273,6 +366,96 @@ export default function Students() {
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {editingStudent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={closeEditModal}>
+          <div
+            className="max-h-[80vh] w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-lg"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2 className="text-lg font-bold">Edit Praktikum</h2>
+            <p className="mt-1 text-sm text-gray-600">
+              {editingStudent.nama} ({editingStudent.nim})
+            </p>
+
+            {isLoadingOptions ? (
+              <p className="mt-4 text-sm text-gray-500">Memuat daftar praktikum...</p>
+            ) : praktikumOptions.length === 0 ? (
+              <p className="mt-4 text-sm text-gray-500">Belum ada praktikum terdaftar.</p>
+            ) : (
+              <ul className="mt-4 space-y-2">
+                {praktikumOptions.map((option) => {
+                  const checked = option.slug in editPlugs
+                  const adaJadwal = option.plugs.length > 0
+                  return (
+                    <li key={option.id} className="rounded-md border p-3">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          disabled={!checked && !adaJadwal}
+                          onChange={() => togglePraktikum(option.slug)}
+                        />
+                        <span className="font-medium">{option.label}</span>
+                        <span className="text-gray-400">({option.slug})</span>
+                      </label>
+                      {checked &&
+                        (adaJadwal ? (
+                          <div className="mt-2 flex items-center gap-2">
+                            <label htmlFor={`plug-${option.id}`} className="text-sm text-gray-600">
+                              Plug
+                            </label>
+                            <select
+                              id={`plug-${option.id}`}
+                              value={editPlugs[option.slug] ?? ''}
+                              onChange={(event) =>
+                                setEditPlugs((current) => ({
+                                  ...current,
+                                  [option.slug]: event.target.value,
+                                }))
+                              }
+                              className="rounded-md border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                            >
+                              <option value="">Pilih plug...</option>
+                              {option.plugs.map((jadwal) => (
+                                <option key={jadwal.id} value={jadwal.plug}>
+                                  {jadwal.plug} ({jadwal.hari} {jadwal.jam_mulai}–{jadwal.jam_selesai})
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        ) : (
+                          <p className="mt-2 text-xs text-red-600">
+                            Jadwal belum tersedia untuk praktikum ini.
+                          </p>
+                        ))}
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+
+            {editError && <p className="mt-3 text-sm text-red-600">{editError}</p>}
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={closeEditModal}
+                disabled={isSavingEdit}
+                className="rounded-md border px-4 py-2 text-sm hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                disabled={isSavingEdit || isLoadingOptions}
+                className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {isSavingEdit ? 'Menyimpan...' : 'Simpan'}
+              </button>
+            </div>
           </div>
         </div>
       )}
