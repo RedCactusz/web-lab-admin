@@ -41,6 +41,7 @@ const Sidebar: React.FC<SideBarProps> = ({ isOpen, onClose }: SideBarProps) => {
                 <a href="/" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Dashboard</a>
                 <a href="/mahasiswa" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Mahasiswa</a>
                 <a href="/alat" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Inventaris Alat</a>
+                <a href="/alat-log" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Riwayat Alat</a>
                 <a href="/praktikum" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Praktikum</a>
                 {isLoading ? (
                     <p>Loading...</p>
