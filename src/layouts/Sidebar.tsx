@@ -11,7 +11,7 @@ interface SideBarProps {
 
 const Sidebar: React.FC<SideBarProps> = ({ isOpen, onClose }: SideBarProps) => {
 
-    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+    const [praktikumMenu, setPraktikumMenu] = useState<MenuItem | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -23,7 +23,12 @@ const Sidebar: React.FC<SideBarProps> = ({ isOpen, onClose }: SideBarProps) => {
                     label: praktikum.label,
                     path: `/praktikum/${praktikum.slug}`
                 }));
-                setMenuItems(items);
+                setPraktikumMenu({
+                    id: 0,
+                    label: "Praktikum",
+                    path: "/praktikum",
+                    children: items
+                });
             } catch (error) {
                 console.error("Error fetching praktikum:", error);
             } finally {
@@ -43,13 +48,10 @@ const Sidebar: React.FC<SideBarProps> = ({ isOpen, onClose }: SideBarProps) => {
                 <a href="/alat" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Inventaris Alat</a>
                 <a href="/alat-log" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Riwayat Alat</a>
                 <a href="/peminjaman" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Peminjaman</a>
-                <a href="/praktikum" className="mb-2 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700">Praktikum</a>
                 {isLoading ? (
                     <p>Loading...</p>
                 ) : (
-                    menuItems.map((item) => (
-                        <SidebarItem key={item.id} item={item} />
-                    ))
+                    praktikumMenu && <SidebarItem item={praktikumMenu} />
                 )}
             </nav>
             <button onClick={onClose} className="absolute top-4 right-4 rounded-md bg-gray-700 px-3 py-1.5 text-sm text-white hover:bg-gray-100">☰</button>
