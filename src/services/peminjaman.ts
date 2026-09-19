@@ -1,5 +1,5 @@
 import { api } from './api'
-import type { AlatListMeta } from './alat'
+import type { AlatListMeta, KondisiEntry } from './alat'
 
 export const PEMINJAMAN_STATUSES = ['pending', 'disetujui', 'ditolak'] as const
 
@@ -13,6 +13,9 @@ export interface PeminjamanItem {
   merk: string | null
   tipe: string | null
   jumlah: number
+  jumlah_alat: number
+  kondisi: KondisiEntry[]
+  ketersediaan: string
 }
 
 export interface Peminjaman {
@@ -27,6 +30,16 @@ export interface Peminjaman {
   returned_at: string | null
   dibuat_pada: string
   items: PeminjamanItem[]
+}
+
+export interface KembalikanItemPayload {
+  peminjaman_alat_id: number
+  kondisi: KondisiEntry[]
+  ketersediaan: 'tersedia' | 'perbaikan'
+}
+
+export interface KembalikanPayload {
+  items: KembalikanItemPayload[]
 }
 
 export interface PeminjamanListParams {
@@ -64,7 +77,10 @@ export const peminjamanService = {
     })
   },
 
-  async kembalikan(id: number): Promise<Peminjaman> {
-    return api<Peminjaman>(`/api/admin/peminjaman/${id}/kembalikan`, { method: 'POST' })
+  async kembalikan(id: number, payload: KembalikanPayload): Promise<Peminjaman> {
+    return api<Peminjaman>(`/api/admin/peminjaman/${id}/kembalikan`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
   },
 }

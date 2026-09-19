@@ -8,6 +8,7 @@ import {
   type PeminjamanStatus,
 } from '@/services'
 import ConfirmActionModal from './_components/ConfirmActionModal'
+import KembalikanModal from './_components/KembalikanModal'
 import TolakModal from './_components/TolakModal'
 
 const SEARCH_DEBOUNCE_MS = 400
@@ -288,12 +289,8 @@ export default function PeminjamanPage() {
       )}
 
       {kembalikanTarget && (
-        <ConfirmActionModal
-          title="Konfirmasi Pengembalian"
-          description={`Catat pengembalian semua alat dari ${kembalikanTarget.nama} (${kembalikanTarget.nim})? Pastikan alat sudah diterima dalam kondisi baik.`}
-          confirmLabel="Konfirmasi"
-          confirmClass="bg-gray-900 hover:bg-gray-700"
-          onConfirm={() => peminjamanService.kembalikan(kembalikanTarget.id).then(() => undefined)}
+        <KembalikanModal
+          peminjaman={kembalikanTarget}
           onClose={() => setKembalikanTarget(null)}
           onSuccess={() => {
             setKembalikanTarget(null)
