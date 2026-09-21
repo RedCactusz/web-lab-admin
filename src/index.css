@@ -1,4 +1,6 @@
+@import "./styles/tokens.css";
 @import "tailwindcss";
+@import "./styles/components.css";
 
 @keyframes slide-in-right {
   from {
